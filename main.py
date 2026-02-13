@@ -2,6 +2,7 @@
 import yfinance as yf
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 #Data
 tickers = {"GLE.PA","^FCHI"}
 data_set = yf.download(tickers, period = "3Y")["Close"]
@@ -59,3 +60,29 @@ print("-" * 30)
 print(f"Bêta (sensibilité) : {beta:.4f}")
 print(f"Alpha (ordonnée à l'origine) : {alpha:.4f}")
 print(f"R² (qualité de l'ajustement) : {r_carre:.4f}")
+
+from sklearn.metrics import mean_squared_error, r2_score
+
+# 1. Prédiction sur les données de test
+y_pred = model.predict(X_test)
+
+# 2. Calcul des métriques
+r2_test = r2_score(y_test, y_pred)
+mse_test = mean_squared_error(y_test, y_pred)
+rmse_test = np.sqrt(mse_test)
+
+print("-" * 30)
+print(f"ÉVALUATION SUR LE TEST SET (20%)")
+print("-" * 30)
+print(f"R² (Test) : {r2_test:.4f}")
+print(f"RMSE : {rmse_test:.4f}")
+
+# 3. Comparaison Train vs Test (détection d'overfitting)
+print(f"Différence R² (Train - Test) : {r_carre - r2_test:.4f}")
+
+plt.figure(figsize=(12, 5))
+plt.plot(y_test.values, label="Réel (GLE.PA)", color='blue', alpha=0.7)
+plt.plot(y_pred, label="Prédit (via CAC 40)", color='orange', linestyle='--')
+plt.title("Comparaison Rendements Réels vs Prédits (Test Set)")
+plt.legend()
+plt.show()

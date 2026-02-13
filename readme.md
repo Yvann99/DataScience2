@@ -1,5 +1,7 @@
 Description du projet
+
 Ce projet analyse la relation entre les rendements de l'action Societe Generale (GLE.PA) et l'indice CAC 40 (^FCHI) sur une periode de 3 ans. L'objectif est de mesurer le risque systematique de l'action par rapport a son marche de reference via une regression lineaire.
+
 
 Etapes du traitement
 Recuperation des donnees historiques via l'API Yahoo Finance.
@@ -29,6 +31,8 @@ pandas
 numpy
 
 scikit-learn
+
+
 
 
 

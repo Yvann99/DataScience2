@@ -30,11 +30,32 @@ print(returns_norm.head())
 from sklearn.model_selection import train_test_split
 
 # On définit les variables (X = CAC 40, y = GLE.PA par exemple)
-X = log_returns[['^FCHI']]
-y = log_returns['GLE.PA']
+X = log_returns[['Log_Ret_^FCHI']] # Variables explicatives (Indice)
+y = log_returns['Log_Ret_GLE.PA']   # Variable cible (Action)
 
 # Split : 80% pour l'entraînement, 20% pour le test
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
 
 print(f"Taille du Train : {len(X_train)} points")
 print(f"Taille du Test : {len(X_test)} points")
+
+from sklearn.linear_model import LinearRegression
+
+# 1. Création du modèle
+model = LinearRegression()
+
+# 2. Entraînement sur les données de Train
+# Rappel : X_train contient le CAC 40 et y_train contient GLE.PA
+model.fit(X_train, y_train)
+
+# 3. Extraction des coefficients
+beta = model.coef_[0]
+alpha = model.intercept_
+r_carre = model.score(X_train, y_train)
+
+print("-" * 30)
+print(f"RÉSULTATS DE LA RÉGRESSION (TRAIN)")
+print("-" * 30)
+print(f"Bêta (sensibilité) : {beta:.4f}")
+print(f"Alpha (ordonnée à l'origine) : {alpha:.4f}")
+print(f"R² (qualité de l'ajustement) : {r_carre:.4f}")

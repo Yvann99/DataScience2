@@ -31,7 +31,7 @@ def implied_vol_newton(S, K, T, R, market_price, sigma_guess=0.2, n_iter=100, to
     return sigma, n_iter
 
 # Paramètres de test
-S, K, T, R = 100, 100, 18, 0.03
+S, K, T, R = 100, 100, 1, 0.03
 market_price = 8.5
 
 vol_imp, iterations = implied_vol_newton(S, K, T, R, market_price)

@@ -1,9 +1,10 @@
-Description du projet
+# Description du projet
+
 
 Ce projet analyse la relation entre les rendements de l'action Societe Generale (GLE.PA) et l'indice CAC 40 (^FCHI) sur une periode de 3 ans. L'objectif est de mesurer le risque systematique de l'action par rapport a son marche de reference via une regression lineaire.
 
 
-Etapes du traitement
+## Etapes du traitement
 Recuperation des donnees historiques via l'API Yahoo Finance.
 
 Calcul des log-rendements pour stabiliser les series temporelles.
@@ -21,7 +22,7 @@ Alpha : Indique la performance propre de l'action independamment du marche.
 
 R2 : Definit la qualite de l'ajustement du modele aux donnees reelles.
 
-Installation
+## Installation
 Le projet necessite Python et les bibliotheques suivantes :
 
 yfinance
@@ -37,7 +38,7 @@ scikit-learn
 
 
 
-##création d'un environnement virtuel avec venv
+## création d'un environnement virtuel avec venv
 
 pyton-m venv .venv
 

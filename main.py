@@ -86,3 +86,23 @@ plt.plot(y_pred, label="Prédit (via CAC 40)", color='orange', linestyle='--')
 plt.title("Comparaison Rendements Réels vs Prédits (Test Set)")
 plt.legend()
 plt.show()
+
+
+#Newton_Raphson
+def f(x):
+    return x**2 + 10*x - 65 
+
+def f1(x):
+    return 2*x + 10
+
+def NR(x0, f, n):
+    x = x0  # On commence à la valeur initiale x0
+    C = [x] # On stocke la valeur de départ
+    for i in range(n):
+        # Formule : x_n+1 = x_n - f(x_n) / f'(x_n)
+        x = x - f(x) / f1(x)
+        C.append(x)
+    return C
+resultats = NR(5, f, 5) # Point de départ 5, sur 5 itérations
+print(resultats)
+#application financière

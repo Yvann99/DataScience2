@@ -106,3 +106,36 @@ def NR(x0, f, n):
 resultats = NR(5, f, 5) # Point de départ 5, sur 5 itérations
 print(resultats)
 #application financière
+def dichotomie(f, a, b, target, tol=1e-6, max_iter=100):
+    """
+    Recherche du zéro de f sur [a, b] par dichotomie
+    Args:
+        f: fonction dont on cherche le zéro
+        a, b: bornes de l'intervalle
+        target: valeur cible pour f(c)
+        tol: tolérance
+        max_iter: nombre maximum d'itérations
+    Returns:
+        c: solution approchée
+    """
+    g=lambda x: f(x)-target
+    if g(a) * g(b) > 0:
+        raise ValueError("g(a) et g(b) doivent être de signes opposés")
+    for i in range(max_iter):
+        c = (a + b) / 2
+        gc = g(c)
+        if abs(gc) < tol:
+            print(f"Convergence en {i+1} itérations")
+            return c, gc, i
+        if g(a) * gc < 0:
+            b = c
+        else:
+            a = c
+    raise ValueError(f"Pas de convergence après {max_iter} itérations")
+
+# Exemple d'utilisation
+if __name__ == "__main__":
+    def f(x):
+        return x**2+10*x-15
+    x, fx, i= dichotomie(f, 0, 100, 50, 0.0001)
+    print(f"Solution approchée: x={x}, f(x)={fx}, itérations={i}")

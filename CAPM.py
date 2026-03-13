@@ -1,16 +1,43 @@
-#On commence par importer les données de SG
-
 import yfinance as yf
-import matplotlib.pyplot as plt
+import pandas as pd
 import statsmodels.api as sm
+import matplotlib.pyplot as plt
 
-ticker = "GLE.PA"
-start_date = "2010-10-01"
-end_date = "2026-02-01"
-df = yf.download(ticker, start = start_date, end = end_date)
+# 1. Récupération des données (Action vs Indice de marché)
+tickers = ["GLE.PA", "^FCHI"]  # GLE = SocGen, ^FCHI = CAC 40
+data = yf.download(tickers, start="2010-01-01", end="2026-02-01")['Close']
 
-print(df.head())
-df['Close'].plot(figsize=(10, 6), title=f"Historique du cours {ticker}")
-plt.ylabel("Prix en Euros")
+# 2. Calcul des rendements logarithmiques (plus stables pour la régression)
+returns = data.pct_change().dropna()
+returns.columns = ['CAC40', 'SocGen']
+
+# 3. Paramètres du modèle
+# On prend un taux sans risque (Risk-free rate) théorique à 3% annuel (0.03)
+rf_annual = 0.03
+rf_daily = (1 + rf_annual)**(1/252) - 1
+
+# Calcul des primes de risque (Excess Returns)
+returns['Excess_SocGen'] = returns['SocGen'] - rf_daily
+returns['Excess_Market'] = returns['CAC40'] - rf_daily
+
+# 4. Régression Linéaire pour trouver le Bêta
+# Y = alpha + beta * X
+X = sm.add_constant(returns['Excess_Market']) # Ajoute l'ordonnée à l'origine (Alpha)
+Y = returns['Excess_SocGen']
+
+model = sm.OLS(Y, X).fit()
+alpha, beta = model.params
+
+print(f"Bêta de la Société Générale : {beta:.4f}")
+print(f"Alpha (Surperformance) : {alpha:.6f}")
+
+# 5. Visualisation de la Droite de Marché (SML)
+plt.figure(figsize=(10, 6))
+plt.scatter(returns['Excess_Market'], returns['Excess_SocGen'], alpha=0.3, label="Données quotidiennes")
+plt.plot(returns['Excess_Market'], alpha + beta * returns['Excess_Market'], color='red', label=f"Droite de régression (β={beta:.2f})")
+plt.title("Modèle CAPM : Société Générale vs CAC 40")
+plt.xlabel("Prime de risque du Marché (CAC 40)")
+plt.ylabel("Prime de risque de l'Action (GLE)")
+plt.legend()
 plt.grid(True)
 plt.show()

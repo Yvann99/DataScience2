@@ -2,6 +2,8 @@ import yfinance as yf
 import pandas as pd
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
+import streamlit as st
+
 
 # 1. Récupération des données (Action vs Indice de marché)
 tickers = ["GLE.PA", "^FCHI"]  # GLE = SocGen, ^FCHI = CAC 40
@@ -41,3 +43,25 @@ plt.ylabel("Prime de risque de l'Action (GLE)")
 plt.legend()
 plt.grid(True)
 plt.show()
+
+#Test de fisher 
+# Après avoir ajusté ton modèle : model = sm.OLS(Y, X).fit()
+# Extraction des statistiques de Fisher
+f_stat = model.fvalue
+f_pvalue = model.f_pvalue
+
+print(f"Statistique de Fisher (F-stat) : {f_stat:.2f}")
+print(f"P-value du test de Fisher      : {f_pvalue:.4e}")
+
+if f_pvalue < 0.05:
+    print("Résultat : Le modèle est globalement significatif (on rejette H0).")
+else:
+    print("Résultat : Le modèle n'est pas significatif.")
+
+# Analyse des résidus
+plt.figure(figsize=(8, 5))
+plt.hist(model.resid, bins=50, edgecolor='black')
+plt.title("Distribution des résidus du modèle CAPM")
+plt.show()
+
+

@@ -26,43 +26,45 @@ def dichotomie(f, a, b, target, tol=1e-6, max_iter=100):
             a = c
     raise ValueError(f"Pas de convergence après {max_iter} itérations")
 
-#Newton Raphson
-def f(x):
-    return x**2 + 10*x - 65 
+import numpy as np
 
-def f1(x):
-    return 2*x + 10
+# --- 1. Tes outils d'optimisation ---
 
-def NR(x0, f, n):
-    x = x0  # On commence à la valeur initiale x0
-    C = [x] # On stocke la valeur de départ
+def newton_raphson(f, df, x0, n=10): # J'ai réorganisé pour plus de flexibilité
+    x = x0
     for i in range(n):
-        # Formule : x_n+1 = x_n - f(x_n) / f'(x_n)
-        x = x - f(x) / f1(x)
-        C.append(x)
-    return C
-resultats = NR(5, f, 5) # Point de départ 5, sur 5 itérations
-print(resultats)
+        derivative = df(x)
+        if derivative == 0: return x
+        x = x - f(x) / derivative
+    return x
 
-from s1_dichotomie import dichotomie
-from s2_newton_raphson import newton_raphson
+def dichotomie(f, a, b, tol=1e-6):
+    i = 0
+    while (b - a) / 2 > tol:
+        i += 1
+        m = (a + b) / 2
+        if f(m) == 0: return m, f(m), i
+        if f(a) * f(m) < 0: b = m
+        else: a = m
+    return (a + b) / 2, f((a + b) / 2), i
 
-def f(r):
-    return 30000.0/(1+r) \
-           +40000.0/(1+r)**2 \
-           +50000.0/(1+r)**3 \
-           -100000.0
+# --- 2. Cas concret : Calcul du TRI (Finistech) ---
 
-r, fr, i=dichotomie(f, 0, 1, 0, tol=1e-6)
-print(f"Solution approchée: r={r}, f(r)={fr}, itérations={i}")
+def f_tri(r):
+    # Modèle de flux de trésorerie (Cash Flows)
+    return 30000.0/(1+r) + 40000.0/(1+r)**2 + 50000.0/(1+r)**3 - 100000.0
 
-def df_approche_finie(f, x):
+def df_tri(r):
     h = 1e-5
-    return (f(x+h) - f(x)) / h
+    return (f_tri(r + h) - f_tri(r)) / h
 
-def df(r):
-    return df_approche_finie(f, r)
+# --- 3. Exécution et Comparaison ---
 
+# Méthode 1 : Dichotomie
+r_dicho, fr_dicho, i_dicho = dichotomie(f_tri, 0, 1)
+print(f"Dichotomie : r = {r_dicho:.6f} ({i_dicho} itérations)")
+
+# Méthode 2 : Newton-Raphson
 r0 = 0.1
-r = newton_raphson(f, df, r0)
-print(f"Solution approchée: r={r}, f(r)={f(r)}")
+r_nr = newton_raphson(f_tri, df_tri, r0, n=5)
+print(f"Newton-Raphson : r = {r_nr:.6f} (5 itérations)")

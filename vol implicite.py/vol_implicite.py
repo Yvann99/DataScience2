@@ -55,3 +55,5 @@ print(f"Intercept (b0) : {b0_opt:.4f}")
 print(f"Coeff X1 (b1)  : {b1_opt:.4f}")
 print(f"Coeff X2 (b2)  : {b2_opt:.4f}")
 #Nelson Siege
+
+#utilisation de Parquet avec les données funds
